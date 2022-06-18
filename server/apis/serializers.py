@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User,Product
+from .models import User,Product,Transaction
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
 from django.contrib.auth.hashers import make_password
@@ -27,4 +27,9 @@ class ProductGetSerializer(serializers.ModelSerializer):
     postedby = UserSerializer(read_only=True)
     class Meta:
         model=Product
+        fields='__all__'
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Transaction
         fields='__all__'

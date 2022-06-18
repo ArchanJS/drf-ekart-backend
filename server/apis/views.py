@@ -9,8 +9,8 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 import io
 from rest_framework.parsers import JSONParser
-from .models import User,Product
-from .serializers import UserSerializer,TokenObtainPairSerializer,ProductCreationSerializer,ProductGetSerializer
+from .models import User,Product,Transaction
+from .serializers import UserSerializer,TokenObtainPairSerializer,ProductCreationSerializer,ProductGetSerializer,TransactionSerializer
 from .utils import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -154,7 +154,12 @@ def buyProduct(request):
             updated_seller=UserSerializer(seller,{'balance':product.productPrice},partial=True)
             if updated_seller.is_valid(raise_exception=True):
                 updated_seller.save()
-            return JsonResponse({'message':'Order plcaed!'},status=status.HTTP_200_OK)
+            transaction_data={'product':product.id,'amount':product.productPrice,'buyer':request.user.id}
+            print(transaction_data)
+            transaction_serializer=TransactionSerializer(data=transaction_data)
+            if transaction_serializer.is_valid(raise_exception=True):
+                transaction_serializer.save()
+            return JsonResponse({'message':'Order placed!'},status=status.HTTP_200_OK)
         elif product.quantity<=0:
             return JsonResponse({'error':'Out of stock!'},status=status.HTTP_400_BAD_REQUEST)
         else:

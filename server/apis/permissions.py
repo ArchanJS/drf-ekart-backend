@@ -21,7 +21,7 @@ class sellerPermission(BasePermission):
 
 # User permission
 class userPermission(BasePermission):
-    def has_permission(self, request, viewj):
+    def has_permission(self, request, view):
         if request.user.verified==True and request.user.isUser==True:
             return True
         return False
